@@ -1,15 +1,8 @@
 [build]
-  # Build command and folder
-  command = "npm install && npm run build"
+  command = "cd web && npm install && npm run build"
   publish = "web/dist"
   functions = "netlify/functions"
 
-[dev]
-  framework = "vite"
-  command = "npm run dev"
-  port = 5173
-
-# Redirect all frontend routes to index.html for React Router
 [[redirects]]
   from = "/*"
   to = "/index.html"
