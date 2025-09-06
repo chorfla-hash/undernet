@@ -8,6 +8,11 @@
     "serve": "cd web && npm run preview",
     "start": "npm run dev"
   },
-  "dependencies": {},
-  "devDependencies": {}
+  "engines": {
+    "node": ">=18 <21"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.0"
+  }
 }
