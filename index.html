@@ -1179,11 +1179,17 @@
 
         // Initialize the application
         function init() {
+            console.log('Initializing forum...');
             setupEventListeners();
             renderCommunities();
             renderPosts();
             updateUI();
+            console.log('Forum initialized successfully');
         }
 
-        // Start the application
-        init();
+        // Start the application when DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
