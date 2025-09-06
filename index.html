@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkForum - Community Discussion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e6ed;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            background: transparent;
+            color: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e6ed;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .forum-section {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        .post-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .post-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .admin-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .username {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .timestamp {
+            color: #a0a9b8;
+            font-size: 0.9rem;
+        }
+
+        .community-tag {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #a0a9b8;
+            cursor: pointer;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #667eea;
+        }
+
+        .action-btn.liked {
+            color: #ff6b6b;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-item:hover .delete-btn {
+            display: flex;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .community-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .community-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .community-item.active {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 5% auto;
+            max-width: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #a0a9b8;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #e0e6ed;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #e0e6ed;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .user-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .user-card .avatar {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .create-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .create-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        .comment-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .comment-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid;
+        }
+
+        .alert-success {
+            background: rgba(46, 213, 115, 0.1);
+            color: #2ed573;
+            border-color: rgba(46, 213, 115, 0.3);
+        }
+
+        .alert-error {
+            background: rgba(255, 71, 87, 0.1);
+            color: #ff4757;
+            border-color: rgba(255, 71, 87, 0.3);
+        }
+
+        .warning-banner {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">DarkForum</div>
+        <div class="nav-buttons">
+            <span id="user-display" style="display: none; margin-right: 1rem;"></span>
+            <button class="btn btn-secondary" id="login-btn">Login</button>
+            <button class="btn btn-secondary" id="register-btn">Register</button>
+            <button class="btn btn-secondary" id="profile-btn" style="display: none;">Profile</button>
+            <button class="btn btn-secondary" id="logout-btn" style="display: none;">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="warning-banner">
+            ⚠️ Client-side demo: Data is stored in your browser and will be lost when cleared. For production, use a proper database backend.
+        </div>
+
+        <div class="main-content">
+            <!-- Communities Sidebar -->
+            <div class="sidebar">
+                <div class="forum-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 class="section-title" style="margin-bottom: 0;">Communities</h3>
+                        <button class="btn btn-primary" id="create-community-btn" style="display: none; padding: 0.3rem 0.6rem; font-size: 0.8rem;">+</button>
+                    </div>
+                    <div class="community-item active" data-community-id="all" onclick="selectCommunity('all', 'All Posts')">
+                        <h4>All Posts</h4>
+                        <p style="font-size: 0.8rem; color: #a0a9b8;">View all communities</p>
+                    </div>
+                    <div id="communities-container"></div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div>
+                <div class="forum-section">
+                    <h2 class="section-title" id="current-view">All Recent Posts</h2>
+                    <div id="posts-container">
+                        <div style="text-align: center; padding: 2rem; color: #a0a9b8;">
+                            <p>No posts yet. Create the first post!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Profile Sidebar -->
+            <div class="sidebar">
+                <div class="forum-section user-card" id="user-profile" style="display: none;">
+                    <div class="avatar" id="profile-avatar">U</div>
+                    <h3 id="profile-username">Username</h3>
+                    <div id="admin-badge" style="display: none;" class="admin-badge">ADMIN</div>
+                    <p id="profile-bio">User bio goes here</p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-number" id="post-count">0</div>
+                            <div>Posts</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="rep-count">0</div>
+                            <div>Rep</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="forum-section">
+                    <h3 class="section-title">Quick Stats</h3>
+                    <div id="forum-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" id="total-posts">0</div>
+                            <div>Total Posts</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="total-users">1</div>
+                            <div>Total Users</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="total-communities">4</div>
+                            <div>Communities</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="create-btn" id="create-post-btn" style="display: none;">+</button>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('login-modal')">&times;</span>
+            <h2>Login</h2>
+            <div id="login-alert"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="login-username" required placeholder="Enter your username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem; color: #a0a9b8;">
+                Demo admin: username "admin", password "admin123"
+            </p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('register-modal')">&times;</span>
+            <h2>Create Account</h2>
+            <div id="register-alert"></div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="register-username" required placeholder="Choose a username">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="register-email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="register-password" required placeholder="Create a password">
+                </div>
+                <div class="form-group">
+                    <label>Bio (optional)</label>
+                    <textarea id="register-bio" placeholder="Tell us about yourself..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('profile-modal')">&times;</span>
+            <h2>Edit Profile</h2>
+            <div id="profile-alert"></div>
+            <form id="profile-form">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="edit-username" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="edit-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea id="edit-bio" placeholder="Tell us about yourself..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Post Modal -->
+    <div id="create-post-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('create-post-modal')">&times;</span>
+            <h2>Create New Post</h2>
+            <div id="create-post-alert"></div>
+            <form id="create-post-form">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="post-title" required placeholder="What's your post about?">
+                </div>
+                <div class="form-group">
+                    <label>Content</label>
+                    <textarea id="post-content" required placeholder="Share your thoughts..." style="min-height: 150px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Community</label>
+                    <select id="post-community" required>
+                        <option value="">Select a community</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Post</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Community Modal -->
+    <div id="create-community-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('create-community-modal')">&times;</span>
+            <h2>Create Community</h2>
+            <div id="create-community-alert"></div>
+            <form id="create-community-form">
+                <div class="form-group">
+                    <label>Community Name</label>
+                    <input type="text" id="community-name" required placeholder="Enter community name">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="community-description" required placeholder="Describe your community..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Community</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Comments Modal -->
+    <div id="comments-modal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close" onclick="closeModal('comments-modal')">&times;</span>
+            <h2 id="comments-title">Comments</h2>
+            <div id="comments-container"></div>
+            <div id="add-comment-section" style="display: none;">
+                <div class="form-group">
+                    <textarea id="comment-content" placeholder="Write a comment..." style="min-height: 80px;"></textarea>
+                </div>
+                <button id="submit-comment" class="btn btn-primary">Add Comment</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage using browser memory (session-based)
+        let forumData = {
+            users: [],
+            posts: [],
+            comments: [],
+            communities: [
+                { id: 1, name: 'General Discussion', description: 'Talk about anything and everything', created_by: 1, member_count: 1 },
+                { id: 2, name: 'Tech Talk', description: 'Technology discussions and news', created_by: 1, member_count: 1 },
+                { id: 3, name: 'Gaming', description: 'Gaming related topics and reviews', created_by: 1, member_count: 1 },
+                { id: 4, name: 'Programming', description: 'Code, development, and programming help', created_by: 1, member_count: 1 }
+            ],
+            nextUserId: 1,
+            nextPostId: 1,
+            nextCommentId: 1,
+            nextCommunityId: 5
+        };
+
+        // Initialize with admin user
+        forumData.users.push({
+            id: 1,
+            username: 'admin',
+            email: 'admin@forum.com',
+            password: 'admin123', // In real app, this would be hashed
+            bio: 'Forum Administrator',
+            is_admin: true,
+            reputation: 100,
+            post_count: 0,
+            created_at: new Date().toISOString()
+        });
+
+        let currentUser = null;
+        let currentCommunity = 'all';
+        let currentPostForComments = null;
+
+        // Utility functions
+        function showAlert(containerId, message, type = 'error') {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+            
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+            
+            return date.toLocaleDateString();
+        }
+
+        function generateId(type) {
+            const id = forumData[`next${type}Id`];
+            forumData[`next${type}Id`]++;
+            return id;
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Data functions
+        function getPosts(communityId = null) {
+            let posts = forumData.posts;
+            if (communityId && communityId !== 'all') {
+                posts = posts.filter(post => post.community_id == communityId);
+            }
+            return posts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        }
+
+        function getUser(userId) {
+            return forumData.users.find(user => user.id === userId);
+        }
+
+        function getCommunity(communityId) {
+            return forumData.communities.find(community => community.id === communityId);
+        }
+
+        function getComments(postId) {
+            return forumData.comments
+                .filter(comment => comment.post_id === postId)
+                .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        }
+
+        // Render functions
+        function renderPosts() {
+            const container = document.getElementById('posts-container');
+            const posts = getPosts(currentCommunity);
+            
+            if (posts.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #a0a9b8;">No posts yet. Be the first to post!</div>';
+                return;
+            }
+            
+            container.innerHTML = posts.map(post => {
+                const author = getUser(post.author_id);
+                const community = getCommunity(post.community_id);
+                const canDelete = currentUser && (currentUser.id === post.author_id || currentUser.is_admin);
+                const isLiked = post.liked_by && post.liked_by.includes(currentUser?.id);
+                
+                return `
+                    <div class="post-item" data-post-id="${post.id}">
+                        ${canDelete ? `<button class="delete-btn" onclick="deletePost(${post.id})" title="Delete post">×</button>` : ''}
+                        
+                        <div class="post-header">
+                            <div class="user-info">
+                                <div class="avatar">${author.username[0].toUpperCase()}</div>
+                                <div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <div class="username">${author.username}</div>
+                                        ${author.is_admin ? '<div class="admin-badge">ADMIN</div>' : ''}
+                                    </div>
+                                    <div class="timestamp">${formatDate(post.created_at)}</div>
+                                </div>
+                            </div>
+                            <div class="community-tag">${community.name}</div>
+                        </div>
+                        
+                        <h3 style="margin-bottom: 0.5rem;">${post.title}</h3>
+                        <p style="line-height: 1.6; margin-bottom: 1rem;">${post.content.replace(/\n/g, '<br>')}</p>
+                        
+                        <div class="post-actions">
+                            <button class="action-btn ${isLiked ? 'liked' : ''}" 
+                                    onclick="likePost(${post.id})" 
+                                    ${!currentUser ? 'disabled' : ''}>
+                                👍 <span id="likes-${post.id}">${post.likes || 0}</span>
+                            </button>
+                            <button class="action-btn" onclick="viewComments(${post.id}, '${post.title.replace(/'/g, "\\'")}')">
+                                💬 <span>${post.comment_count || 0}</span>
+                            </button>
+                            <button class="action-btn" onclick="sharePost(${post.id})">
+                                🔗 Share
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderCommunities() {
+            const container = document.getElementById('communities-container');
+            container.innerHTML = forumData.communities.map(community => `
+                <div class="community-item ${currentCommunity == community.id ? 'active' : ''}" 
+                     data-community-id="${community.id}" 
+                     onclick="selectCommunity(${community.id}, '${community.name.replace(/'/g, "\\'")}')">
+                    <h4>${community.name}</h4>
+                    <p style="font-size: 0.8rem; color: #a0a9b8;">${community.member_count} members</p>
+                    <p style="font-size: 0.8rem; margin-top: 0.3rem;">${community.description}</p>
+                </div>
+            `).join('');
+            
+            // Update community dropdown
+            const select = document.getElementById('post-community');
+            select.innerHTML = '<option value="">Select a community</option>' +
+                forumData.communities.map(community => 
+                    `<option value="${community.id}">${community.name}</option>`
+                ).join('');
+        }
+
+        function renderComments(postId) {
+            const container = document.getElementById('comments-container');
+            const comments = getComments(postId);
+            
+            if (comments.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #a0a9b8;">No comments yet. Be the first to comment!</div>';
+            } else {
+                container.innerHTML = comments.map(comment => {
+                    const author = getUser(comment.author_id);
+                    return `
+                        <div class="comment-item">
+                            <div class="comment-author">${author.username} • ${formatDate(comment.created_at)}</div>
+                            <div class="comment-text">${comment.content.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        // Action functions
+        function selectCommunity(communityId, communityName) {
+            document.querySelectorAll('.community-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            if (communityId === 'all') {
+                document.querySelector('[data-community-id="all"]').classList.add('active');
+                document.getElementById('current-view').textContent = 'All Recent Posts';
+                currentCommunity = 'all';
+            } else {
+                document.querySelector(`[data-community-id="${communityId}"]`).classList.add('active');
+                document.getElementById('current-view').textContent = communityName;
+                currentCommunity = communityId;
+            }
+            
+            renderPosts();
+        }
+
+        function likePost(postId) {
+            if (!currentUser) {
+                alert('Please login to like posts');
+                return;
+            }
+            
+            const post = forumData.posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            if (!post.liked_by) post.liked_by = [];
+            if (!post.likes) post.likes = 0;
+            
+            const userIndex = post.liked_by.indexOf(currentUser.id);
+            
+            if (userIndex > -1) {
+                // Unlike
+                post.liked_by.splice(userIndex, 1);
+                post.likes--;
+                document.querySelector(`[onclick="likePost(${postId})"]`).classList.remove('liked');
+            } else {
+                // Like
+                post.liked_by.push(currentUser.id);
+                post.likes++;
+                document.querySelector(`[onclick="likePost(${postId})"]`).classList.add('liked');
+            }
+            
+            document.getElementById(`likes-${postId}`).textContent = post.likes;
+        }
+
+        function deletePost(postId) {
+            if (!confirm('Are you sure you want to delete this post?')) return;
+            
+            const postIndex = forumData.posts.findIndex(p => p.id === postId);
+            if (postIndex === -1) return;
+            
+            const post = forumData.posts[postIndex];
+            
+            // Check permissions
+            if (currentUser.id !== post.author_id && !currentUser.is_admin) {
+                alert('Permission denied');
+                return;
+            }
+            
+            // Remove post and its comments
+            forumData.posts.splice(postIndex, 1);
+            forumData.comments = forumData.comments.filter(c => c.post_id !== postId);
+            
+            // Update user post count
+            const author = getUser(post.author_id);
+            if (author) author.post_count--;
+            
+            if (currentUser.id === post.author_id) {
+                currentUser.post_count--;
+                updateUI();
+            }
+            
+            renderPosts();
+        }
+
+        function viewComments(postId, postTitle) {
+            document.getElementById('comments-title').textContent = `Comments - ${postTitle}`;
+            renderComments(postId);
+            currentPostForComments = postId;
+            
+            if (currentUser) {
+                document.getElementById('add-comment-section').style.display = 'block';
+            } else {
+                document.getElementById('add-comment-section').style.display = 'none';
+            }
+            
+            openModal('comments-modal');
+        }
+
+        function sharePost(postId) {
+            const url = window.location.href + `#post-${postId}`;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url);
+                alert('Post link copied to clipboard!');
+            } else {
+                prompt('Copy this link:', url);
+            }
+        }
+
+        // Update UI based on login status
+        function updateUI() {
+            const loginBtn = document.getElementById('login-btn');
+            const registerBtn = document.getElementById('register-btn');
+            const profileBtn = document.getElementById('profile-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            const userDisplay = document.getElementById('user-display');
+            const userProfile = document.getElementById('user-profile');
+            const createPostBtn = document.getElementById('create-post-btn');
+            const createCommunityBtn = document.getElementById('create-community-btn');
+
+            if (currentUser) {
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                profileBtn.style.display = 'inline-block';
+                logoutBtn.style.display = 'inline-block';
+                userDisplay.style.display = 'inline-block';
+                userDisplay.textContent = `Welcome, ${currentUser.username}!`;
+                userProfile.style.display = 'block';
+                createPostBtn.style.display = 'block';
+                createCommunityBtn.style.display = 'inline-block';
+
+                // Update profile card
+                document.getElementById('profile-avatar').textContent = currentUser.username[0].toUpperCase();
+                document.getElementById('profile-username').textContent = currentUser.username;
+                document.getElementById('profile-bio').textContent = currentUser.bio || 'No bio set';
+                document.getElementById('post-count').textContent = currentUser.post_count || 0;
+                document.getElementById('rep-count').textContent = currentUser.reputation || 0;
+                
+                if (currentUser.is_admin) {
+                    document.getElementById('admin-badge').style.display = 'block';
+                } else {
+                    document.getElementById('admin-badge').style.display = 'none';
+                }
+            } else {
+                loginBtn.style.display = 'inline-block';
+                registerBtn.style.display = 'inline-block';
+                profileBtn.style.display = 'none';
+                logoutBtn.style.display = 'none';
+                userDisplay.style.display = 'none';
+                userProfile.style.display = 'none';
+                createPostBtn.style.display = 'none';
+                createCommunityBtn.style.display = 'none';
+            }
+            
+            // Update stats
+            document.getElementById('total-posts').textContent = forumData.posts.length;
+            document.getElementById('total-users').textContent = forumData.users.length;
+            document.getElementById('total-communities').textContent = forumData.communities.length;
+        }
+
+        // Event listeners
+        document.getElementById('login-btn').addEventListener('click', () => openModal('login-modal'));
+        document.getElementById('register-btn').addEventListener('click', () => openModal('register-modal'));
+        document.getElementById('profile-btn').addEventListener('click', () => {
+            if (currentUser) {
+                document.getElementById('edit-username').value = currentUser.username;
+                document.getElementById('edit-email').value = currentUser.email;
+                document.getElementById('edit-bio').value = currentUser.bio || '';
+                openModal('profile-modal');
+            }
+        });
+        document.getElementById('create-post-btn').addEventListener('click', () => openModal('create-post-modal'));
+        document.getElementById('create-community-btn').addEventListener('click', () => openModal('create-community-modal'));
+
+        // Form submissions
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('register-username').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+            const bio = document.getElementById('register-bio').value.trim();
+            
+            // Check if username or email already exists
+            const existingUser = forumData.users.find(u => u.username === username || u.email === email);
+            if (existingUser) {
+                showAlert('register-alert', 'Username or email already exists');
+                return;
+            }
+            
+            const newUser = {
+                id: generateId('User'),
+                username,
+                email,
+                password, // In real app, hash this
+                bio,
+                is_admin: false,
+                reputation: 0,
+                post_count: 0,
+                created_at: new Date().toISOString()
+            };
+            
+            forumData.users.push(newUser);
+            showAlert('register-alert', 'Account created successfully!', 'success');
+            document.getElementById('register-form').reset();
+            
+            setTimeout(() => closeModal('register-modal'), 2000);
+        });
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            const user = forumData.users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                updateUI();
+                closeModal('login-modal');
+                document.getElementById('login-form').reset();
+                renderPosts();
+            } else {
+                showAlert('login-alert', 'Invalid credentials');
+            }
+        });
+
+        document.getElementById('profile-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const newUsername = document.getElementById('edit-username').value.trim();
+            const email = document.getElementById('edit-email').value.trim();
+            const bio = document.getElementById('edit-bio').value.trim();
+            
+            // Check if new username/email conflicts with others
+            const conflictUser = forumData.users.find(u => 
+                u.id !== currentUser.id && (u.username === newUsername || u.email === email)
+            );
+            
+            if (conflictUser) {
+                showAlert('profile-alert', 'Username or email already exists');
+                return;
+            }
+            
+            currentUser.username = newUsername;
+            currentUser.email = email;
+            currentUser.bio = bio;
+            
+            updateUI();
+            closeModal('profile-modal');
+            renderPosts();
+        });
+
+        document.getElementById('create-post-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('post-title').value.trim();
+            const content = document.getElementById('post-content').value.trim();
+            const communityId = parseInt(document.getElementById('post-community').value);
+            
+            const newPost = {
+                id: generateId('Post'),
+                title,
+                content,
+                author_id: currentUser.id,
+                community_id: communityId,
+                likes: 0,
+                liked_by: [],
+                comment_count: 0,
+                created_at: new Date().toISOString()
+            };
+            
+            forumData.posts.push(newPost);
+            currentUser.post_count++;
+            
+            closeModal('create-post-modal');
+            document.getElementById('create-post-form').reset();
+            renderPosts();
+            updateUI();
+        });
+
+        document.getElementById('create-community-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('community-name').value.trim();
+            const description = document.getElementById('community-description').value.trim();
+            
+            // Check if community name exists
+            const existing = forumData.communities.find(c => c.name === name);
+            if (existing) {
+                showAlert('create-community-alert', 'Community name already exists');
+                return;
+            }
+            
+            const newCommunity = {
+                id: generateId('Community'),
+                name,
+                description,
+                created_by: currentUser.id,
+                member_count: 1,
+                created_at: new Date().toISOString()
+            };
+            
+            forumData.communities.push(newCommunity);
+            
+            closeModal('create-community-modal');
+            document.getElementById('create-community-form').reset();
+            renderCommunities();
+            updateUI();
+        });
+
+        document.getElementById('submit-comment').addEventListener('click', () => {
+            const content = document.getElementById('comment-content').value.trim();
+            if (!content || !currentPostForComments) return;
+            
+            const newComment = {
+                id: generateId('Comment'),
+                post_id: currentPostForComments,
+                author_id: currentUser.id,
+                content,
+                likes: 0,
+                created_at: new Date().toISOString()
+            };
+            
+            forumData.comments.push(newComment);
+            
+            // Update post comment count
+            const post = forumData.posts.find(p => p.id === currentPostForComments);
+            if (post) {
+                post.comment_count = (post.comment_count || 0) + 1;
+            }
+            
+            document.getElementById('comment-content').value = '';
+            renderComments(currentPostForComments);
+            renderPosts();
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            currentUser = null;
+            updateUI();
+            renderPosts();
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+
+        // Initialize the application
+        function init() {
+            renderCommunities();
+            renderPosts();
+            updateUI();
+        }
+
+        // Start the application
+        init();
