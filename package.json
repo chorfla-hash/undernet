@@ -1,1 +1,13 @@
-
+{
+  "name": "dark-forum",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "cd web && npm run dev",
+    "build": "cd web && npm run build",
+    "serve": "cd web && npm run preview",
+    "start": "npm run dev"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
